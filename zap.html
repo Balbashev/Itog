@@ -1,0 +1,66 @@
+<html>
+<head>
+    <title>Запрос записей</title>
+<meta charset="utf-8">
+<style>
+   .btn {
+    display: inline-block; /* Строчно-блочный элемент */
+    background: #8C959D; /* Серый цвет фона */
+    color: #fff; /* Белый цвет текста */
+    padding: 1rem 1.5rem; /* Поля вокруг текста */
+    text-decoration: none; /* Убираем подчёркивание */
+    border-radius: 3px; /* Скругляем уголки */
+   }
+  </style>
+</head>
+<body>
+<a href="index.html" class="btn">Главная</a>
+<form aсtion="search_data.php" method=POST>
+    Ищем по:<br>
+    <select name="searchtype" size=8>
+        <option value="fam" selected>Фамилии
+        <option value="year">Году рождения
+        <option value="gender">Полу
+	<option value="groups" selected>Группе
+	<option value="fakult" selected>Факультету
+	<option value="srbl" selected>Среднему баллу
+	<option value="rabota" selected>Работе
+	<option value="town" selected>Городу
+    </select> <br>
+    Что ищем:<br> <input name="searchterm"> <br>
+    <input type=submit value="Поиск">
+</form>
+<?php
+$searchterm = trim ( $_POST['searchterm'] );
+if (!$searchterm)
+    die ("Не все данные введены.<br>
+    Пожалуйста, вернитесь назад и закончите ввод");
+$searchterm = addslashes ($searchterm);
+	$db_host = 'localhost';
+	$db_username = 'mysql';
+	$db_password = 'mysql';
+	$db_name = 'itog';
+	$db_charset = 'utf8';
+	$is_connected = @mysqli_connect($db_host, $db_username, $db_password, $db_name);
+	if ( !$is_connected ) die ("Невозможно подключение к MySQL");
+$query = "SELECT * FROM itog WHERE "
+    .$_POST['searchtype']." like '%".$searchterm."%'";
+$result = mysqli_query ( $is_connected, $query );
+$n = mysqli_num_rows ( $result );
+for ( $i=0; $i<$n; $i++ )
+{
+    $row = mysqli_fetch_array($result);
+    echo "<p><b>Фамилия: ".$row['fam']."</b><br>";
+    echo "Год рождения: ".$row['year']."<br>";
+    echo "Пол: ".$row['gender']."<br>";
+    echo "Группа: ".$row['groups']."<br>";
+    echo "Факультет: ".$row['fakult']."<br>";
+    echo "Средний балл: ".$row['srbl']."<br>";
+    echo "Место работы: ".$row['rabota']."<br>";
+    echo "Город: ".$row['town']."</p>";
+}
+if ( $n == 0 ) echo "Ничего не можем предложить. Извините";
+mysqli_close ( $is_connected );
+?>
+</body>
+</html>

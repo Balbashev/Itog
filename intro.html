@@ -1,0 +1,76 @@
+<html>
+<head>
+    <title>Форма добавления записей</title>
+<meta charset="utf-8">
+<style>
+   table {
+    width: 300px; /* Ширина таблицы */
+    border: 1px solid green; /* Рамка вокруг таблицы */
+    margin: auto; /* Выравниваем таблицу по центру окна  */
+   }
+   td {
+    text-align: center; /* Выравниваем текст по центру ячейки */
+   }
+  </style>
+<style>
+   .btn {
+    display: inline-block; /* Строчно-блочный элемент */
+    background: #8C959D; /* Серый цвет фона */
+    color: #fff; /* Белый цвет текста */
+    padding: 1rem 1.5rem; /* Поля вокруг текста */
+    text-decoration: none; /* Убираем подчёркивание */
+    border-radius: 3px; /* Скругляем уголки */
+   }
+  </style>
+</head>
+<body>
+<form aсtion="insert_data.php" method=POST>
+    <table>
+        <tr><td>Фамилия</td><td><input type=text name="fam" maxlength=30 size=30></td></tr>
+        <tr><td>Год рождения</td><td><input type=text name="year" maxlength=30 size=30></td></tr>
+        <tr><td>Пол</td><td><input type=text name="gender" maxlength=30 size=30></td></tr>
+        <tr><td>Группа</td><td><input type=text name="groups" maxlength=30 size=30></td></tr>
+        <tr><td>Факультет</td><td><input type=text name="fakult" maxlength=30 size=30></td></tr>
+	<tr><td>Средний балл</td><td><input type=text name="srbl" maxlength=30 size=30></td></tr>
+	<tr><td>Место работы</td><td><input type=text name="rabota" maxlength=30 size=30></td></tr>
+	<tr><td>Город</td><td><input type=text name="town" maxlength=30 size=30></td></tr>
+        <tr><td colspan=2><input type="submit" value="Ввод"></td></tr>
+	<a href="index.html" class="btn">Главная</a>
+    </table>
+</form>
+<?php
+if (!isset($_POST['fam']) || !isset($_POST['year']) ||
+    !isset($_POST['gender']) || !isset($_POST['groups']) ||
+    !isset($_POST['fakult']) || !isset($_POST['srbl']) ||
+    !isset($_POST['rabota']) || !isset($_POST['town'])){
+        die ("Не все данные введены.<br>
+                Пожалуйста, вернитесь назад и закончите ввод");
+}
+$fam   = trim ( $_POST['fam'] );
+$year = trim ( $_POST['year'] );
+$gender  = trim ( $_POST['gender'] ) ;
+$fakult  = trim ( $_POST['fakult'] ) ;
+$rabota  = trim ( $_POST['rabota'] ) ;
+$town  = trim ( $_POST['town'] ) ;
+$fam   = addslashes ( $fam );
+$year = addslashes ( $year );
+$gender  = addslashes ( $gender ) ;
+$fakult  = addslashes ( $fakult ) ;
+$rabota  = addslashes ( $rabota ) ;
+$town  = addslashes ( $town ) ;	
+	$db_host = 'localhost';
+	$db_username = 'mysql';
+	$db_password = 'mysql';
+	$db_name = 'itog';
+	$db_charset = 'utf8';
+	$is_connected = @mysqli_connect($db_host, $db_username, $db_password, $db_name);
+	if ( !$is_connected ) die ("Невозможно подключение к MySQL");
+$query = "INSERT INTO itog VALUES ('".$fam."', '".$year."', '".$gender."', 
+'".intval($_POST['groups'])."', '".$fakult."', '".intval($_POST['srbl'])."',
+ '".$rabota."', '".$town."')";
+$result = mysqli_query ( $is_connected, $query );
+if ($result) echo "Книга добавлена в базу данных.";
+mysqli_close ( $is_connected );
+?>
+</body>
+</html>
